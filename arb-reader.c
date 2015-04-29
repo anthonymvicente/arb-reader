@@ -63,15 +63,29 @@ int main(int argc, char *argv[])
 
     // end padding is used to ensure our start_line_number isn't the very last line of the text
     // after all, we want to read some lines
-    int end_padding = number_of_lines / PADDING_RATIO;
-    if(end_padding < 1)
+    int end_padding;
+    if(PADDING_RATIO != 0)
+    {
+        end_padding = number_of_lines / PADDING_RATIO;
+        if(end_padding < 1)
+        {
+            end_padding = 1;
+        }
+    } else
     {
         end_padding = 1;
     }
     // start padding is used to ensure that the number of lines we read is somewhat relative to the size of the text
     // this means the longer the text, the more lines we'll read
-    int read_line_padding = number_of_lines / PADDING_RATIO;
-    if(read_line_padding < 1)
+    int read_line_padding;
+    if(PADDING_RATIO != 0)
+    {
+        read_line_padding = number_of_lines / PADDING_RATIO;
+        if(read_line_padding < 1)
+        {
+            read_line_padding = 1;
+        }
+    } else
     {
         read_line_padding = 1;
     }

@@ -1,5 +1,0 @@
-/home/anthony/documents/books/txt/BURNING_CHROME.txt
-/home/anthony/documents/books/txt/COUNT_ZERO.txt
-/home/anthony/documents/books/txt/MONA_LISA_OVERDRIVE.txt
-/home/anthony/documents/books/txt/NEUROMANCER.txt
-/home/anthony/documents/books/txt/SNOW_CRASH.txt
