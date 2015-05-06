@@ -5,6 +5,7 @@
 #include<dirent.h>
 #include<time.h>
 #include<unistd.h>
+#include"helpers.h"
 
 #define FIRST_LINE 0
 #define MAX_BUFFER 1024
@@ -20,6 +21,7 @@ int rand_range(int, int);
 void select_file(FILE *, char *);
 int count_lines(FILE *);
 void remove_ending_newline(char *);
+char *get_filename_from_path(char **, int);
 
 int main(int argc, char *argv[])
 {
@@ -41,19 +43,19 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    char file_name[MAX_BUFFER];
+    char file_path[MAX_BUFFER];
 
-    select_file(f_list, file_name);
+    select_file(f_list, file_path);
 
     fclose(f_list);
 
-    remove_ending_newline(file_name);
+    remove_ending_newline(file_path);
 
-    FILE *file = fopen(file_name, "r");
+    FILE *file = fopen(file_path, "r");
 
     if(file == NULL)
     {
-        fprintf(stderr, "error opening file: %s\n", file_name);
+        fprintf(stderr, "error opening file: %s\n", file_path);
         exit(1);
     }
 
@@ -116,6 +118,10 @@ int main(int argc, char *argv[])
     }
 
     fclose(file);
+
+    int depth;
+    char **split_path = split_filepath(file_path, &depth);
+    char *file_name = get_filename_from_path(split_path, depth);
 
     printf("excerpt from: %s\n\n", file_name);
     printf("%s", out_buff);
@@ -190,4 +196,9 @@ int count_lines(FILE *file)
 void remove_ending_newline(char *str)
 {
     str[strlen(str) - 1] = '\0';
+}
+
+char *get_filename_from_path(char **split_path, int depth)
+{
+    return split_path[depth];
 }

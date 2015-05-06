@@ -29,5 +29,5 @@ In order to ensure that the random selection of text doesn't chose the last line
 TODO:
 
 - [x] make PADDING_RATIO change-safe
-- [ ] change 'excerpt from:' text to only display file name instead of full path
+- [x] change 'excerpt from:' text to only display file name instead of full path
 - [ ] implement option to point arb-reader at a directory of text files
