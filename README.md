@@ -10,9 +10,13 @@ simply run ```make``` in the download directory to generate the binary file.
 
 USAGE, COMMAND LINE:
 
-    ./arb-reader [list file]
+    arb-reader [list file]
 
 where [list file] is a file containing a list of text files, including their path, from which a random entry will be selected. Each file must be on a separate line.
+
+    arb-reader -d [directory]
+
+where [directory] is a path to a directory containing text files to be read from.
 
 USAGE, PHOSPHOR:
 
@@ -30,4 +34,4 @@ TODO:
 
 - [x] make PADDING_RATIO change-safe
 - [x] change 'excerpt from:' text to only display file name instead of full path
-- [ ] implement option to point arb-reader at a directory of text files
+- [x] implement option to point arb-reader at a directory of text files

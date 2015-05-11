@@ -5,6 +5,7 @@
 #include<dirent.h>
 #include<time.h>
 #include<unistd.h>
+#include<sys/stat.h>
 #include"helpers.h"
 
 #define FIRST_LINE 0
@@ -19,37 +20,57 @@ int file_selected = 0;
 
 int rand_range(int, int);
 void select_file(FILE *, char *);
+void select_file_from_dir(char *, char *);
 int count_lines(FILE *);
 void remove_ending_newline(char *);
 char *get_filename_from_path(char **, int);
 
 int main(int argc, char *argv[])
 {
-    if(argc != 2)
+    if(argc < 2)
     {
         fprintf(stderr, "invalid number of arguments: %d\n", argc - 1);
         fprintf(stderr, "usage: %s [file list]\n", argv[0]);
         exit(1);
     }
 
-    srand(time(NULL));
+    int select_from_dir = 0;
+    char file_path[MAX_BUFFER];
+    char dir_path[MAX_BUFFER];
 
-    char *f_list_name = argv[1];
-    FILE *f_list = fopen(f_list_name, "r");
-
-    if(f_list == NULL)
+    if(argc == 3 && (strcmp(argv[1], "-d") == 0))
     {
-        fprintf(stderr, "error opening file: %s\n", f_list_name);
-        return 1;
+        select_from_dir = 1;
+        strcpy(dir_path, argv[2]);
+        if(dir_path[strlen(dir_path) - 1] != '/')
+        {
+            strcat(dir_path, "/");
+        }
     }
 
-    char file_path[MAX_BUFFER];
+    srand(time(NULL));
 
-    select_file(f_list, file_path);
+    if(!select_from_dir)
+    {
+        char *f_list_name = argv[1];
+        FILE *f_list = fopen(f_list_name, "r");
 
-    fclose(f_list);
+        if(f_list == NULL)
+        {
+            fprintf(stderr, "error opening file: %s\n", f_list_name);
+            return 1;
+        }
 
-    remove_ending_newline(file_path);
+        select_file(f_list, file_path);
+
+        fclose(f_list);
+
+        remove_ending_newline(file_path);
+    } else
+    {
+        strcpy(file_path, dir_path);
+        select_file_from_dir(dir_path, file_path);
+    }
 
     FILE *file = fopen(file_path, "r");
 
@@ -60,6 +81,7 @@ int main(int argc, char *argv[])
     }
 
     int number_of_lines = count_lines(file);
+
     // reset pointer in file stream
     fseek(file, 0, SEEK_SET);
 
@@ -175,6 +197,61 @@ void select_file(FILE *f_list, char *file_name)
             file_selected = 1;
         }
     }
+}
+
+void select_file_from_dir(char *dir_path, char *file_name)
+{
+    DIR *dp;
+    struct dirent *ep;
+    struct stat fstat;
+    dp = opendir(dir_path);
+    int restart_count = 0;
+    char file_path[MAX_BUFFER];
+
+    if(dp == NULL)
+    {
+        fprintf(stderr, "error opening directory: %s\n", dir_path);
+        exit(1);
+    }
+
+    while(!file_selected)
+    {
+        ep = readdir(dp);
+
+        if(ep == NULL)
+        {
+            closedir(dp);
+            dp = opendir(dir_path);
+            ep = readdir(dp);
+            if(ep == NULL)
+            {
+                fprintf(stderr, "empty directory: %s\n", dir_path);
+                exit(1);
+            }
+            restart_count++;
+        }
+
+        strcpy(file_path, dir_path);
+
+        strcat(file_path, ep->d_name);
+
+        if((stat(file_path, &fstat)) == -1)
+        {
+            fprintf(stderr, "error stating file: %s\n", ep->d_name);
+            exit(1);
+        }
+
+        if(S_ISREG(fstat.st_mode))
+        {
+            if(rand() % 2 || restart_count == MAX_LOOP)
+            {
+                file_selected = 1;
+                strcat(file_name, ep->d_name);
+            }
+        }
+    }
+
+    closedir(dp);
 }
 
 int count_lines(FILE *file)
