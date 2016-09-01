@@ -27,10 +27,10 @@ char *get_filename_from_path(char **, int);
 
 int main(int argc, char *argv[])
 {
-    if(argc < 2)
+    if(argc < 2 || argc > 4)
     {
         fprintf(stderr, "invalid number of arguments: %d\n", argc - 1);
-        fprintf(stderr, "usage: %s [file list]\n", argv[0]);
+        fprintf(stderr, "usage: %s -[d,g] [file list]\n", argv[0]);
         exit(1);
     }
 
@@ -38,13 +38,23 @@ int main(int argc, char *argv[])
     char file_path[MAX_BUFFER];
     char dir_path[MAX_BUFFER];
 
-    if(argc == 3 && (strcmp(argv[1], "-d") == 0))
+    if(argc >= 3)
     {
-        select_from_dir = 1;
-        strcpy(dir_path, argv[2]);
-        if(dir_path[strlen(dir_path) - 1] != '/')
+        if(strstr(argv[1], "-") == NULL)
         {
-            strcat(dir_path, "/");
+            fprintf(stderr, "invalid first argument: %s\n", argv[1]);
+            fprintf(stderr, "first argument is expected as a flag with '-' preceding flag options\n");
+            exit(1);
+        }
+
+        if(strstr(argv[1], "d") != NULL)
+        {
+            select_from_dir = 1;
+            strcpy(dir_path, argv[2]);
+            if(dir_path[strlen(dir_path) - 1] != '/')
+            {
+                strcat(dir_path, "/");
+            }
         }
     }
 
