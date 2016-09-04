@@ -19,6 +19,7 @@
 int file_selected = 0;
 
 int rand_range(int, int);
+void add_glitch_to_line(char *);
 void select_file(FILE *, char *);
 void select_file_from_dir(char *, char *);
 int count_lines(FILE *);
@@ -159,6 +160,10 @@ int main(int argc, char *argv[])
     for(i = 0; i < read_line_number; i++)
     {
         fgets(r_line, MAX_BUFFER, file);
+        if(add_glitch && rand() % 2)
+        {
+            add_glitch_to_line(r_line);
+        }
         strcat(out_buff, r_line);
     }
 
@@ -218,6 +223,19 @@ void select_file(FILE *f_list, char *file_name)
         if(restart_count == MAX_LOOP)
         {
             file_selected = 1;
+        }
+    }
+}
+
+void add_glitch_to_line(char *str)
+{
+    int str_len = strlen(str);
+    int i = 0;
+    for(; i < str_len; i++)
+    {
+        if(rand() % 10 == 2)
+        {
+            str[i] = '$';
         }
     }
 }
