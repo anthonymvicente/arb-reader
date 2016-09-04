@@ -35,26 +35,39 @@ int main(int argc, char *argv[])
     }
 
     int select_from_dir = 0;
+    int add_glitch = 0;
     char file_path[MAX_BUFFER];
     char dir_path[MAX_BUFFER];
 
+    // if we have more than one argument, the first arguments need to be flags
     if(argc >= 3)
     {
-        if(strstr(argv[1], "-") == NULL)
+        // loop through flags, stopping before the last argument, which should be the filepath
+        int i = 1;
+        for(; i < argc - 1; i++)
         {
-            fprintf(stderr, "invalid first argument: %s\n", argv[1]);
-            fprintf(stderr, "first argument is expected as a flag with '-' preceding flag options\n");
-            exit(1);
-        }
-
-        if(strstr(argv[1], "d") != NULL)
-        {
-            select_from_dir = 1;
-            strcpy(dir_path, argv[2]);
-            if(dir_path[strlen(dir_path) - 1] != '/')
+            if(strstr(argv[i], "-") == NULL)
             {
-                strcat(dir_path, "/");
+                fprintf(stderr, "invalid argument: %s\n", argv[i]);
+                fprintf(stderr, "this argument is expected as a flag with '-' preceding flag options [d,g]\n");
+                exit(1);
             }
+
+            if(strstr(argv[i], "d") != NULL)
+            {
+                select_from_dir = 1;
+                strcpy(dir_path, argv[argc - 1]);
+                if(dir_path[strlen(dir_path) - 1] != '/')
+                {
+                    strcat(dir_path, "/");
+                }
+            }
+
+            if(strstr(argv[i], "g") != NULL)
+            {
+                add_glitch = 1;
+            }
+
         }
     }
 
@@ -62,7 +75,7 @@ int main(int argc, char *argv[])
 
     if(!select_from_dir)
     {
-        char *f_list_name = argv[1];
+        char *f_list_name = argv[argc - 1];
         FILE *f_list = fopen(f_list_name, "r");
 
         if(f_list == NULL)
