@@ -233,9 +233,9 @@ void add_glitch_to_line(char *str)
     int i = 0;
     for(; i < str_len; i++)
     {
-        if(rand() % 10 == 2)
+        if(rand() % 10 == 1)
         {
-            str[i] = '$';
+            str[i] = rand() % 120 + 120;
         }
     }
 }
