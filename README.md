@@ -18,6 +18,8 @@ where [list file] is a file containing a list of text files, including their pat
 
 where [directory] is a path to a directory containing text files to be read from.
 
+add a `g` flag to cause 'glitch' like characters to be randomly inserted into lines of the text.
+
 USAGE, PHOSPHOR:
 
 I've found the best way to use arb-reader with Phosphor is to add the executable to your path (ie ~/bin). Open xscreensaver-demo and select Phosphor, then go to the Advanced tab. Under the Text Manipulation section choose program, and use the following format:
